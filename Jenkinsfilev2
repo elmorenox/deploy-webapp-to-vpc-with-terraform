@@ -3,16 +3,18 @@ pipeline {
    stages {
     stage ('Clean') {
       steps {
-        sh '''#!/bin/bash
-        echo "command to run the pkill.sh"
-        '''
+      sh '''#!/bin/bash
+          scp pkill.sh ubuntu@10.0.2.89:~/pkill.sh
+          ssh ubuntu@10.0.2.89 "chmod +x ~/pkill.sh && ~/pkill.sh"
+      '''
      }
    }
  stage ('Deploy') {
   steps {
-     sh '''#!/bin/bash
-     echo "command to run the setup2.sh"
-    '''
+      sh '''#!/bin/bash
+          scp setup2.sh ubuntu@10.0.2.89:~/setup2.sh
+          ssh ubuntu@10.0.2.89 "chmod +x ~/setup2.sh && ~/setup2.sh"
+      '''
       }
     }
   }
