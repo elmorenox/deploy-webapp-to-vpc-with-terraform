@@ -1,6 +1,6 @@
 # Provisioning a virtual private cloud (VPC) with terraform
 
-***This is a guide to using some base line terraform code to deploy a virtual private cloud that hosts a Jenkins server along with a web server for a retail banking web application (Flask). The Jenkins server is used for a continuous integration and continuous delivery pipeline of the banking app.***
+***This is a guide to use some base line terraform code to deploy a virtual private cloud that houses a Jenkins server along with a web server for a retail banking web application (Flask). The Jenkins server is used for a continuous integration and continuous delivery pipeline of the banking app.***
 
 ## VPC Architecture
 
@@ -15,7 +15,7 @@
 
 ## Terraform
 
-Terraform is central to this project and helps avoid the need to manually create and configure resources in AWS. With terraform we can define a resources like a vpc, subnet, security group, etc. in a .tf file. We can then run the terraform code to create the resources in AWS.
+Terraform is central to this project and helps avoid the manual creation and configurations of resources in AWS. With terraform we can define a resources like a vpc, subnet, security group, etc. in a .tf file. We can then run the terraform code to create the resources in AWS.
 
 A terraform project can be started with a simple init command
 
@@ -23,13 +23,13 @@ A terraform project can be started with a simple init command
 terraform init
 ```
 
-Before we can create resources we need to provide authentication details to terraform. If the aws cli is installed and authenticated we can cat the credentials file to see the authentication details.
+Before we can create resources we need to provide authentication details to terraform so that we can access our aws account. If the aws cli is installed and authenticated we can cat the credentials file to see the authentication details.
 
 ```bash
 cat ~/.aws/credentials
 ```
 
-It's possible to add the credential to a provider block but i've found it easier to use environment variables. The environment variables are set in the terminal session that terraform is run in
+It's possible to add the credential to a provider block on the tf file but i've found it easier to use environment variables. The environment variables are set in the terminal session that terraform is runs in.
 
 ```bash
 export AWS_ACCESS_KEY_ID="anaccesskey"
@@ -60,8 +60,9 @@ If we want to destroy the resources we can run a destroy command
 terraform destroy
 ```
 
-In terraform code for this deployment we added shell scripts to the user data of the Jenkins server and the web server. The shell scripts are used to install the required software on the servers. The shell scripts are run when the servers are created. The shell scripts are located in the [scripts](./terraform) directory.
+In terraform code for this deployment we added shell scripts to the user data of the Jenkins server and the web server. The shell scripts are used to install required software on the servers. The shell scripts are run when the servers are created. The shell scripts are located in the [scripts](./terraform) directory.
 
+***variables.tf***
 With terraform a variables.tf file we can define variables like:
 
 ```terraform
@@ -85,7 +86,7 @@ Be sure to include the variables.tf file in the [.gitignore](.gitignore) file so
 
 ## Github
 
-Before you build the pipeline you'll need a Github token and use it on Jenkins so that it can pull the respository
+Before you build the pipeline you'll need a Github token and use it on Jenkins so that it can pull the repository
 
 - Navigate to your Github users setting
 - Click on 'Developer Settings'
@@ -160,7 +161,7 @@ Confirm that you can ssh into the web server from the Jenkins server.
 ssh ubuntu@{web-server-private-ip}
 ```
 
-## Jenkinsfile
+***Jenkinsfile***
 
 In the jenkins file we can use bash to ssh into the web server and deploy the web application. The scp command is used in the jenkins file to copy the setup.sh script onto the web server. The setup.sh script is then executed on the web server. The setup.sh script installs the required software on the web server and starts the web application.
 
@@ -174,3 +175,9 @@ sh '''#!/bin/bash
 Once the copy and execution commands are in the jenkins file we can run the pipeline. The pipeline will build the web application and deploy it to the web server. The web application is accessible on port 8000 of the web server's public ip address.
 
 ![retail-banking-app](retail-banking-app.png)
+
+## Improvement
+
+The pipeline set is manual. The pipeline could be built using the jenkins cli. The jenkins cli could be used to create the pipeline and add the webhook to the github repository.
+
+The security groups for the public subnets allow all inbound and outbound traffic. This is not ideal. The security groups should be updated to only allow traffic on the required ports.
