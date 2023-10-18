@@ -181,3 +181,5 @@ Once the copy and execution commands are in the jenkins file we can run the pipe
 The pipeline set is manual. The pipeline could be built using the jenkins cli. The jenkins cli could be used to create the pipeline and add the webhook to the github repository.
 
 The security groups for the public subnets allow all inbound and outbound traffic. This is not ideal. The security groups should be updated to only allow traffic on the required ports.
+
+Only the web app server should be on a public subnet
